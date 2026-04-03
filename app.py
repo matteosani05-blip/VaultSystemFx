@@ -58,14 +58,14 @@ DEFAULT_CONFIG = {
     "mt5_password": "",
     "mt5_server": "",
     "symbols": [
-        {"symbol": "EURUSD-P", "lot": 0.07, "enabled": False},
-        {"symbol": "USDCAD-P", "lot": 0.07, "enabled": False},
-        {"symbol": "GBPUSD-P", "lot": 0.07, "enabled": False},
-        {"symbol": "XAUUSD-P", "lot": 0.02, "enabled": False},
-        {"symbol": "GBPJPY-P", "lot": 0.07, "enabled": False},
-        {"symbol": "EURGBP-P", "lot": 0.07, "enabled": False},
-        {"symbol": "USDJPY-P", "lot": 0.07, "enabled": False},
-        {"symbol": "EURJPY-P", "lot": 0.07, "enabled": False},
+        {"symbol": "EURUSD-P", "lot": 0.07, "enabled": True},
+        {"symbol": "USDCAD-P", "lot": 0.07, "enabled": True},
+        {"symbol": "GBPUSD-P", "lot": 0.07, "enabled": True},
+        {"symbol": "XAUUSD-P", "lot": 0.02, "enabled": True},
+        {"symbol": "GBPJPY-P", "lot": 0.07, "enabled": True},
+        {"symbol": "EURGBP-P", "lot": 0.07, "enabled": True},
+        {"symbol": "USDJPY-P", "lot": 0.07, "enabled": True},
+        {"symbol": "EURJPY-P", "lot": 0.07, "enabled": True},
         {"symbol": "EURNZD-P", "lot": 0.07, "enabled": True},
         {"symbol": "EURCHF-P", "lot": 0.07, "enabled": True},
         {"symbol": "USDCHF-P", "lot": 0.07, "enabled": True},
@@ -375,7 +375,7 @@ def _show_activation_dialog():
 # ─────────────────────────────────────────────────────────────────
 # AUTO-UPDATE
 # ─────────────────────────────────────────────────────────────────
-CURRENT_VERSION = "1.1.1"
+CURRENT_VERSION = "1.1.2"
 
 def _check_update():
     import requests
@@ -541,13 +541,6 @@ def load_config():
             merged = {**DEFAULT_CONFIG, **saved}
             for key in _STRATEGY_KEYS:
                 merged[key] = DEFAULT_CONFIG[key]
-
-            # Migrazione v1.1.0: aggiorna simboli di default
-            if saved.get("config_version", "1.0.0") < "1.1.0":
-                merged["symbols"] = DEFAULT_CONFIG["symbols"]
-                merged["config_version"] = "1.1.0"
-                save_config(merged)
-                log.info("[CONFIG] Migrazione v1.1.0: simboli aggiornati ai nuovi default")
 
             return merged
         except Exception:
@@ -2183,7 +2176,7 @@ input[type=text]::placeholder,input[type=password]::placeholder{color:var(--text
 <script>
 var cfg={};var equityHistory=[];var equityChart=null;var tradeHistory=[];var symRows=[];var openDD=null;var rid=0;
 function minimizeWin(){window.pywebview.api.minimize_window();}function toggleMaxWin(){window.pywebview.api.toggle_maximize();}function closeWin(){window.pywebview.api.close_window();}
-var updateUrl='';function checkUpdate(){window.pywebview.api.check_update().then(function(raw){var data=JSON.parse(raw);if(!data)return;updateUrl=data.url;document.getElementById('update-ver').textContent='Versione attuale: 1.1.1  →  Nuova: '+data.version;document.getElementById('update-note').textContent=data.note||"Nuove funzionalita e miglioramenti.";document.getElementById('update-overlay').classList.add('show');});}
+var updateUrl='';function checkUpdate(){window.pywebview.api.check_update().then(function(raw){var data=JSON.parse(raw);if(!data)return;updateUrl=data.url;document.getElementById('update-ver').textContent='Versione attuale: 1.1.2  →  Nuova: '+data.version;document.getElementById('update-note').textContent=data.note||"Nuove funzionalita e miglioramenti.";document.getElementById('update-overlay').classList.add('show');});}
 function doUpdate(){var btn=document.getElementById('btn-update-now');var prog=document.getElementById('update-progress');var bar=document.getElementById('update-bar');btn.disabled=true;btn.textContent='Download in corso...';prog.style.display='block';var pct=0;var iv=setInterval(function(){pct=Math.min(pct+2,90);bar.style.width=pct+'%';},200);window.pywebview.api.download_update(updateUrl).then(function(res){clearInterval(iv);if(res==='ok'){bar.style.width='100%';btn.innerHTML='&#10003; Riavvio in corso...';}else{btn.textContent='Errore — riprova';btn.disabled=false;}});}
 document.getElementById('titlebar').addEventListener('dblclick',function(e){if(e.target.closest('.titlebar-btns'))return;toggleMaxWin();});
 function switchTab(name,btnId){var panels=document.querySelectorAll('.tab-panel');for(var i=0;i<panels.length;i++)panels[i].classList.remove('active');var btns=document.querySelectorAll('.tab-btn');for(var i=0;i<btns.length;i++)btns[i].classList.remove('active');document.getElementById('tab-'+name).classList.add('active');document.getElementById(btnId).classList.add('active');}
