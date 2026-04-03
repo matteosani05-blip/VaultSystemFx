@@ -375,7 +375,7 @@ def _show_activation_dialog():
 # ─────────────────────────────────────────────────────────────────
 # AUTO-UPDATE
 # ─────────────────────────────────────────────────────────────────
-CURRENT_VERSION = "1.1.2"
+CURRENT_VERSION = "1.1.3"
 
 def _check_update():
     import requests
@@ -1320,15 +1320,21 @@ class Api:
 
     def start_bot(self, cfg_json):
         try:
+            log.info("[API] start_bot chiamato")
             cfg = json.loads(cfg_json)
             for k in _STRATEGY_KEYS:
                 cfg[k] = DEFAULT_CONFIG[k]
             self.cfg = cfg
             save_config(cfg)
+            log.info("[API] Config salvato, avvio BotEngine...")
             self.engine = BotEngine(cfg, log_callback=self._on_log, status_callback=self._on_status)
             self.engine.start()
+            log.info("[API] BotEngine avviato")
             return "ok"
         except Exception as e:
+            log.error(f"[API] start_bot errore: {e}")
+            import traceback
+            log.error(traceback.format_exc())
             return f"error:{e}"
 
     def stop_bot(self):
@@ -2176,7 +2182,7 @@ input[type=text]::placeholder,input[type=password]::placeholder{color:var(--text
 <script>
 var cfg={};var equityHistory=[];var equityChart=null;var tradeHistory=[];var symRows=[];var openDD=null;var rid=0;
 function minimizeWin(){window.pywebview.api.minimize_window();}function toggleMaxWin(){window.pywebview.api.toggle_maximize();}function closeWin(){window.pywebview.api.close_window();}
-var updateUrl='';function checkUpdate(){window.pywebview.api.check_update().then(function(raw){var data=JSON.parse(raw);if(!data)return;updateUrl=data.url;document.getElementById('update-ver').textContent='Versione attuale: 1.1.2  →  Nuova: '+data.version;document.getElementById('update-note').textContent=data.note||"Nuove funzionalita e miglioramenti.";document.getElementById('update-overlay').classList.add('show');});}
+var updateUrl='';function checkUpdate(){window.pywebview.api.check_update().then(function(raw){var data=JSON.parse(raw);if(!data)return;updateUrl=data.url;document.getElementById('update-ver').textContent='Versione attuale: 1.1.3  →  Nuova: '+data.version;document.getElementById('update-note').textContent=data.note||"Nuove funzionalita e miglioramenti.";document.getElementById('update-overlay').classList.add('show');});}
 function doUpdate(){var btn=document.getElementById('btn-update-now');var prog=document.getElementById('update-progress');var bar=document.getElementById('update-bar');btn.disabled=true;btn.textContent='Download in corso...';prog.style.display='block';var pct=0;var iv=setInterval(function(){pct=Math.min(pct+2,90);bar.style.width=pct+'%';},200);window.pywebview.api.download_update(updateUrl).then(function(res){clearInterval(iv);if(res==='ok'){bar.style.width='100%';btn.innerHTML='&#10003; Riavvio in corso...';}else{btn.textContent='Errore — riprova';btn.disabled=false;}});}
 document.getElementById('titlebar').addEventListener('dblclick',function(e){if(e.target.closest('.titlebar-btns'))return;toggleMaxWin();});
 function switchTab(name,btnId){var panels=document.querySelectorAll('.tab-panel');for(var i=0;i<panels.length;i++)panels[i].classList.remove('active');var btns=document.querySelectorAll('.tab-btn');for(var i=0;i<btns.length;i++)btns[i].classList.remove('active');document.getElementById('tab-'+name).classList.add('active');document.getElementById(btnId).classList.add('active');}
